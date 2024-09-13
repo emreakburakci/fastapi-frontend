@@ -1,29 +1,37 @@
-# Use an official Node.js runtime as a parent image
-FROM node:14
+# Use a more recent Node.js LTS version
+FROM node:18
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files to the working directory
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Use a different npm registry
-RUN npm config set registry https://registry.npmjs.org/
+# Use the default npm registry (comment out if you specifically need a different one)
+# RUN npm config set registry https://registry.npmjs.org/
 
-# Install the dependencies
-RUN npm install --verbose
+# Install dependencies with a timeout and retry mechanism
+RUN npm install --verbose --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=60000 || (sleep 10 && npm install --verbose)
 
-# Copy the rest of the application code to the working directory
+# Copy the rest of the application code
 COPY . .
 
 # Build the React app
 RUN npm run build
 
-# Install a simple HTTP server to serve the static files
+# Use a multi-stage build to reduce final image size
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy built assets from the previous stage
+COPY --from=0 /app/build ./build
+
+# Install serve
 RUN npm install -g serve
 
-# Set the command to run the HTTP server on port 3000
+# Set the command to run the HTTP server
 CMD ["serve", "-s", "build", "-l", "3000"]
 
-# Expose port 3000 to the outside world
+# Expose port 3000
 EXPOSE 3000
