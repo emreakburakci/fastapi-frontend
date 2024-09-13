@@ -16,7 +16,7 @@ const Login = () => {
       formData.append('username', username);
       formData.append('password', password);
 
-      const response = await axios.post('http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/token', formData, {
+      const response = await axios.post('http://localhost:8000/token', formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },

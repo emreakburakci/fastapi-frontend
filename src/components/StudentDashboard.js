@@ -20,7 +20,7 @@ const StudentDashboard = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/get_courses', {
+      const response = await axios.get('http://localhost:8000/get_courses', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -35,7 +35,7 @@ const StudentDashboard = () => {
     try {
       const username = localStorage.getItem('username');
       console.log("USERNAME: ", username);
-      const response = await axios.post('http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/student/courses', username, {
+      const response = await axios.post('http://localhost:8000/student/courses', username, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const StudentDashboard = () => {
   const handleEnrollCourse = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/enroll_course', {
+      await axios.post('http://localhost:8000/enroll_course', {
         course_id: selectedCourse,
       }, {
         headers: {
@@ -71,7 +71,7 @@ const StudentDashboard = () => {
     formData.append('file_type', fileType);
 
     try {
-      const response = await axios.post('http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/analyze_file', formData, {
+      const response = await axios.post('http://localhost:8000/analyze_file', formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data',
@@ -93,7 +93,7 @@ const StudentDashboard = () => {
     });
 
     try {
-      const response = await axios.post(`http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/${endpoint}`, formData, {
+      const response = await axios.post(`http://localhost:8000/${endpoint}`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data',

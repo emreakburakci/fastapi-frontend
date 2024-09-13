@@ -18,7 +18,7 @@ const AdminDashboard = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get('http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/get_students', {
+      const response = await axios.get('http://localhost:8000/get_students', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -31,7 +31,7 @@ const AdminDashboard = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/get_courses', {
+      const response = await axios.get('http://localhost:8000/get_courses', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
   const handleAddStudent = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/add_student', {
+      await axios.post('http://localhost:8000/add_student', {
         username,
         password,
       }, {
@@ -63,7 +63,7 @@ const AdminDashboard = () => {
   const handleAddCourse = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://ec2-13-60-233-36.eu-north-1.compute.amazonaws.com:8000/add_course', {
+      await axios.post('http://localhost:8000/add_course', {
         name: courseName,
       }, {
         headers: {
