@@ -1,36 +1,40 @@
-# Use a more recent Node.js LTS version
-FROM node:18
+# Build stage
+FROM node:18-alpine AS build
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files
 COPY package*.json ./
 
-# Use the default npm registry (comment out if you specifically need a different one)
-# RUN npm config set registry https://registry.npmjs.org/
+# Install dependencies with strict timeout and retry settings
+RUN npm config set fetch-retry-maxtimeout 60000 \
+    && npm config set fetch-retry-mintimeout 10000 \
+    && npm config set fetch-retries 5 \
+    && npm install --production --no-optional --verbose --unsafe-perm
 
-# Install dependencies with a timeout and retry mechanism
-RUN npm install --verbose --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=60000 || (sleep 10 && npm install --verbose)
-
-# Copy the rest of the application code
+# Copy source files
 COPY . .
 
-# Build the React app
+# Build the app
 RUN npm run build
 
-# Use a multi-stage build to reduce final image size
+# Production stage
 FROM node:18-alpine
 
+# Set the working directory
 WORKDIR /app
-
-# Copy built assets from the previous stage
-COPY --from=0 /app/build ./build
 
 # Install serve
 RUN npm install -g serve
 
-# Set the command to run the HTTP server
+# Copy built assets from build stage
+COPY --from=build /app/build ./build
+
+# Set environment variable
+ENV NODE_ENV=production
+
+# Set the command to run the app
 CMD ["serve", "-s", "build", "-l", "3000"]
 
 # Expose port 3000
