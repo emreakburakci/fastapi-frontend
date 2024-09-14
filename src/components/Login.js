@@ -22,25 +22,24 @@ const Login = () => {
         },
       });
 
-      // const { access_token,role,token_type,user } = response.data;
-
       localStorage.setItem('token', response.data.access_token);
       localStorage.setItem('username', response.data.username);
       localStorage.setItem('role', response.data.role);
-      console.log("TOKEN: ",response.data.access_token);
+      console.log("TOKEN: ", response.data.access_token);
       console.log(response.data.username);
       console.log(response.data.role);
       console.log(response.data);
+
       if (response.data.role === 'admin') {
         navigate('/admin-dashboard');
       } else if (response.data.role === 'student') {
         navigate('/student-dashboard');
       }
     } catch (err) {
-      setError('Login failed. Please check your username and password.');
+      setError('Incorrect username or password');
     }
   };
-
+  
   return (
     <Container>
       <h1 className="text-center my-4">Login</h1>
